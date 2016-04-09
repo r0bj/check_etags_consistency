@@ -54,7 +54,7 @@ func worker(id int, jobs <-chan Param, results chan<- Msg) {
 			results <- msg
 			continue
 		}
-		if (resp.StatusCode != 200) {
+		if resp.StatusCode != 200 {
 			msg.etag = nil
 			results <- msg
 			continue	
@@ -77,7 +77,7 @@ func executeWorkers(hosts, url string, concurrent int) []Msg {
 	results := make(chan Msg, len(hostsList))
 
 	var workersNum int
-	if (len(hostsList) < concurrent) {
+	if len(hostsList) < concurrent {
 		workersNum = len(hostsList)
 	} else {
 		workersNum = concurrent
@@ -113,7 +113,7 @@ func analizeResults(messages []Msg, check *nagiosplugin.Check) {
 	}
 
 	// if there are more than one ETag found
-	if (len(hostsPerEtag) > 1) {
+	if len(hostsPerEtag) > 1 {
 		numOfEtags := make(map[string]int)
 		for k, _ := range hostsPerEtag {
 			numOfEtags[k] = len(hostsPerEtag[k])
@@ -127,15 +127,15 @@ func analizeResults(messages []Msg, check *nagiosplugin.Check) {
 			invalidHosts = append(invalidHosts, hostsPerEtag[h.Key]...)
 		}
 		check.AddResult(nagiosplugin.CRITICAL, fmt.Sprintf("invalid ETag on: %s", strings.Join(append(invalidHosts, failedHosts...), " ")))
-	} else if (len(hostsPerEtag) == 0) {
+	} else if len(hostsPerEtag) == 0 {
 		check.AddResult(nagiosplugin.WARNING, "no ETags")
-	} else if (len(hostsPerEtag) == 1) {
+	} else if len(hostsPerEtag) == 1 {
 		var etagsNum int
 		for k, _ := range hostsPerEtag {
 			etagsNum = len(hostsPerEtag[k])
 			break
 		}
-		if (len(failedHosts) == 0) {
+		if len(failedHosts) == 0 {
 			check.AddResult(nagiosplugin.OK, fmt.Sprintf("%d identical ETags", etagsNum))
 		} else {
 			check.AddResult(nagiosplugin.WARNING, fmt.Sprintf("no ETags from: %s", strings.Join(failedHosts, " ")))
