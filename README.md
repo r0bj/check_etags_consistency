@@ -1,5 +1,5 @@
 # check_etags_consistency
-ETag consistency check across whole web cluster for nagios
+ETag consistency check across web nodes for nagios
 
 ```
 usage: check_etags_consistency [<flags>] <servers>
