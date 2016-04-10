@@ -121,7 +121,7 @@ func analizeResults(messages []Msg, check *nagiosplugin.Check) {
 		}
 		sortedNumOfEtags := sortByValue(numOfEtags)
 		// delete 0 element of slice
-		// elements 0 of the slice represents highest number of ETags, majority of ETags (valid Etags)
+		// element 0 of the slice represents highest number of ETags, majority of ETags (valid Etags)
 		// we need to collect info about only invalid ETags so valid are deleted
 		sortedNumOfEtags = append(sortedNumOfEtags[:0], sortedNumOfEtags[1:]...)
 
