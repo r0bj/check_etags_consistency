@@ -101,6 +101,7 @@ func executeWorkers(hosts, url string, concurrent int) []Msg {
 	return resultList
 }
 
+// majority of ETags wins - majority of ETags is considered as valid, rest as invalid
 func analizeResults(messages []Msg, check *nagiosplugin.Check) {
 	hostsPerEtag := make(map[string][]string)
 	failedHosts := make([]string, 0)
@@ -112,7 +113,7 @@ func analizeResults(messages []Msg, check *nagiosplugin.Check) {
 		}
 	}
 
-	// if there are more than one ETag found
+	// if there are more than one ETag
 	if len(hostsPerEtag) > 1 {
 		numOfEtags := make(map[string]int)
 		for k, _ := range hostsPerEtag {
@@ -120,6 +121,8 @@ func analizeResults(messages []Msg, check *nagiosplugin.Check) {
 		}
 		sortedNumOfEtags := sortByValue(numOfEtags)
 		// delete 0 element of slice
+		// elements 0 of the slice represents highest number of ETags, majority of ETags (valid Etags)
+		// we need to collect info about only invalid ETags so valid are deleted
 		sortedNumOfEtags = append(sortedNumOfEtags[:0], sortedNumOfEtags[1:]...)
 
 		invalidHosts := make([]string, 0)
